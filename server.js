@@ -11,14 +11,23 @@ const app = express();
 
 // Middleware
 app.use(cors());
-app.use(bodyParser.json());
+app.use(bodyParser.json()); // You can also use express's built-in body parser: app.use(express.json())
 
 // Connect to the Database
-connectDB();
+connectDB().then(() => {
+  console.log('Connected to MongoDB');
+}).catch((err) => {
+  console.error('Database connection error:', err);
+});
 
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/cars', carRoutes);
+
+// Root Route for Testing
+app.get('/', (req, res) => {
+  res.send('Server is running!');
+});
 
 // Error Handling Middleware
 app.use((err, req, res, next) => {
